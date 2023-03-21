@@ -221,7 +221,7 @@ public class DisguiseConfig {
     @Getter
     private static boolean usingReleaseBuild = true;
     @Getter
-    private static boolean bisectHosted = true;
+    private static boolean bisectHosted = false;
     @Getter
     private static String savedServerIp = "";
     @Getter
@@ -291,42 +291,43 @@ public class DisguiseConfig {
     }
 
     public static boolean isAutoUpdate() {
-        if (getAutoUpdate() == null) {
+        return false;
+        /*if (getAutoUpdate() == null) {
             autoUpdate = LibsDisguises.getInstance().getConfig().getBoolean("AutoUpdate");
         }
 
-        return getAutoUpdate();
+        return getAutoUpdate();*/
     }
 
-    public static void setAutoUpdate(boolean update) {
+    /*public static void setAutoUpdate(boolean update) {
         if (isAutoUpdate() == update) {
             return;
         }
 
         autoUpdate = update;
         doUpdaterTask();
-    }
+    }*/
 
-    public static void setNotifyUpdate(boolean update) {
+    /*public static void setNotifyUpdate(boolean update) {
         if (isNotifyUpdate() == update) {
             return;
         }
 
         notifyUpdate = update;
         doUpdaterTask();
-    }
+    }*/
 
-    public static void setLastUpdateRequest(long lastRequest) {
+    /*public static void setLastUpdateRequest(long lastRequest) {
         if (lastRequest <= getLastUpdateRequest()) {
             return;
         }
 
         lastUpdateRequest = lastRequest;
         saveInternalConfig();
-    }
+    }*/
 
     private static void doUpdaterTask() {
-        boolean startTask = isAutoUpdate() || isNotifyUpdate() ||
+        /*boolean startTask = isAutoUpdate() || isNotifyUpdate() ||
             "1592".equals((LibsPremium.getPaidInformation() == null ? LibsPremium.getPluginInformation() : LibsPremium.getPaidInformation()).getUserID());
 
         // Don't ever run the auto updater on a custom build..
@@ -357,7 +358,7 @@ public class DisguiseConfig {
             public void run() {
                 LibsDisguises.getInstance().getUpdateChecker().doAutoUpdateCheck();
             }
-        }, timeSinceLast, timer);
+        }, timeSinceLast, timer);*/
     }
 
     public static void setUsingReleaseBuilds(boolean useReleaseBuilds) {
@@ -376,7 +377,7 @@ public class DisguiseConfig {
 
         hittingRateLimit = hitRateLimit;
         saveInternalConfig();
-        doUpdaterTask();
+        //doUpdaterTask();
     }
 
     public static void setBisectHosted(boolean isBisectHosted, String serverIP) {
@@ -640,7 +641,7 @@ public class DisguiseConfig {
         setWitherSkullPacketsEnabled(config.getBoolean("PacketsEnabled.WitherSkull"));
         setWolfDyeable(config.getBoolean("DyeableWolf"));
         setTablistRemoveDelay(config.getInt("TablistRemoveDelay"));
-        setAutoUpdate(config.getBoolean("AutoUpdate"));
+        //setAutoUpdate(config.getBoolean("AutoUpdate"));
         setTallSelfDisguises(config.getBoolean("TallSelfDisguises"));
         setOverrideCustomNames(config.getBoolean("OverrideCustomNames"));
         setRandomDisguises(config.getBoolean("RandomDisguiseOptions"));
@@ -712,7 +713,7 @@ public class DisguiseConfig {
         loadCustomDisguises();
 
         // Another wee trap for the non-legit
-        if ("%%__USER__%%".equals("12345") && getCustomDisguises().size() > 10) {
+        /*if ("%%__USER__%%".equals("12345") && getCustomDisguises().size() > 10) {
             setSoundsEnabled(false);
 
             // Lets remove randomly half the custom disguises hey
@@ -726,7 +727,7 @@ public class DisguiseConfig {
                     itel.remove();
                 }
             }
-        }
+        }*/
 
         boolean verbose;
 
@@ -767,10 +768,10 @@ public class DisguiseConfig {
             DisguiseUtilities.getLogger().info("Config is up to date!");
         }
 
-        if (LibsPremium.isPremium() && !LibsPremium.isBisectHosted() && LibsPremium.getPaidInformation() != null &&
+        /*if (LibsPremium.isPremium() && !LibsPremium.isBisectHosted() && LibsPremium.getPaidInformation() != null &&
             LibsPremium.getPaidInformation().getSize() < 666) {
             DisguiseConfig.setDisablePvE(true);
-        }
+        }*/
     }
 
     public static void loadModdedDisguiseTypes() {

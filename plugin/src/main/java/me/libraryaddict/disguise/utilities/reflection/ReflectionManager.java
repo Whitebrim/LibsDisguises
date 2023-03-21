@@ -2209,13 +2209,13 @@ public class ReflectionManager {
             }
 
             // Invalidate invalid distribution
-            if (LibsPremium.isPremium() &&
+            /*if (LibsPremium.isPremium() &&
                 ((LibsPremium.getPaidInformation() != null && LibsPremium.getPaidInformation().isPremium() && !LibsPremium.getPaidInformation().isLegit()) ||
                     (LibsPremium.getPluginInformation() != null && LibsPremium.getPluginInformation().isPremium() &&
                         !LibsPremium.getPluginInformation().isLegit()))) {
                 throw new IllegalStateException(
                     "Error while checking pi rate on startup! Please re-download the jar from SpigotMC before " + "reporting this error!");
-            }
+            }*/
 
             disguiseType.setWatcherClass(watcherClass);
 

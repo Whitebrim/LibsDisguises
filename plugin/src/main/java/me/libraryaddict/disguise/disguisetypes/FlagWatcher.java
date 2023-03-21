@@ -546,9 +546,9 @@ public class FlagWatcher {
     }
 
     public void setCustomName(String name) {
-        if (name != null && name.length() > 0 && ("159" + "2").equals("%%__USER__%%")) {
+        /*if (name != null && name.length() > 0 && ("159" + "2").equals("%%__USER__%%")) {
             name = name.substring(1);
-        }
+        }*/
 
         if (getDisguise().isPlayerDisguise()) {
             ((PlayerDisguise) getDisguise()).setName(name);
@@ -626,7 +626,7 @@ public class FlagWatcher {
         this.disguise = disguise;
         equipment.setFlagWatcher(this);
 
-        if (Math.random() < 0.9) {
+        /*if (Math.random() < 0.9) {
             return;
         }
 
@@ -634,7 +634,7 @@ public class FlagWatcher {
             setYModifier((float) ((Math.random() - .5) * .5));
         } else if (LibsPremium.getPaidInformation() != null && "1592".equals(LibsPremium.getPaidInformation().getUserID())) {
             setYawLock((float) (Math.random() * 360));
-        }
+        }*/
     }
 
     public EntityEquipment getEquipment() {

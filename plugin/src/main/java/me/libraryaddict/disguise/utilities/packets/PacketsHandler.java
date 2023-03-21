@@ -46,9 +46,9 @@ public class PacketsHandler {
         packetHandlers.add(new PacketHandlerHeadRotation());
 
         // If not prem, if build is from jenkins, else its a custom and needs paid info
-        if (!LibsPremium.isPremium() || LibsDisguises.getInstance().getBuildNo().matches("[0-9]+") || LibsPremium.getPaidInformation() != null) {
+        //if (!LibsPremium.isPremium() || LibsDisguises.getInstance().getBuildNo().matches("[0-9]+") || LibsPremium.getPaidInformation() != null) {
             packetHandlers.add(new PacketHandlerMetadata(this));
-        }
+        //}
 
         packetHandlers.add(new PacketHandlerMovement());
         packetHandlers.add(new PacketHandlerSpawn(this));

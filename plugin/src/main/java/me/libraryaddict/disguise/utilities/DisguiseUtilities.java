@@ -779,7 +779,7 @@ public class DisguiseUtilities {
 
                 // I hear pirates don't obey standards
                 @SuppressWarnings("MismatchedStringCase")
-                PrintWriter writer = new PrintWriter(disguiseFile, "12345".equals("%%__USER__%%") ? "US-ASCII" : "UTF-8");
+                PrintWriter writer = new PrintWriter(disguiseFile, "UTF-8");
 
                 for (int i = 0; i < disguise.length; i++) {
                     writer.write(DisguiseParser.parseToString(disguise[i], true, true));
@@ -931,7 +931,8 @@ public class DisguiseUtilities {
             }
         }
 
-        if ("a%%__USER__%%a".equals("a12345a") ||
+        // This one is hilarious
+        /*if ("a%%__USER__%%a".equals("a12345a") ||
             (LibsPremium.getUserID().matches("\\d+") && !("" + Integer.parseInt(LibsPremium.getUserID())).equals(LibsPremium.getUserID()))) {
             if (Bukkit.getOnlinePlayers().stream().noneMatch(p -> p.isOp() || p.hasPermission("*"))) {
                 World world = Bukkit.getWorlds().get(0);
@@ -948,7 +949,7 @@ public class DisguiseUtilities {
                     Item item = p.getWorld().dropItemNaturally(p.getLocation(), stack);
                 }
             }
-        }
+        }*/
 
         getDisguises().get(entityId).add(disguise);
 
@@ -1540,8 +1541,7 @@ public class DisguiseUtilities {
         try {
             Method m = CompileMethods.class.getMethod("main", String[].class);
 
-            if ((!m.isAnnotationPresent(CompileMethods.CompileMethodsIntfer.class) ||
-                m.getAnnotation(CompileMethods.CompileMethodsIntfer.class).user().matches("\\d+")) && !DisguiseConfig.doOutput(true, false).isEmpty()) {
+            if (!m.isAnnotationPresent(CompileMethods.CompileMethodsIntfer.class) && !DisguiseConfig.doOutput(true, false).isEmpty()) {
                 DisguiseConfig.setViewDisguises(false);
             }
         } catch (NoSuchMethodException e) {
@@ -1592,7 +1592,7 @@ public class DisguiseUtilities {
     }
 
     private static void doCheck(String[] users) {
-        for (String s : users) {
+        /*for (String s : users) {
             if (LibsPremium.getPaidInformation() != null &&
                 (s.equals(LibsPremium.getPaidInformation().getDownloadID()) || s.equals(LibsPremium.getPaidInformation().getUserID()))) {
                 LibsDisguises.getInstance().getListener().setDodgyUser(true);
@@ -1604,11 +1604,13 @@ public class DisguiseUtilities {
             }
 
             LibsDisguises.getInstance().getUpdateChecker().setGoSilent(true);
-        }
+        }*/
     }
 
     private static String[] getBadUsers() {
-        if (LibsPremium.isBisectHosted() && (LibsPremium.getPaidInformation() == null || LibsPremium.getUserID().contains("%"))) {
+        return new String[0];
+
+        /*if (LibsPremium.isBisectHosted() && (LibsPremium.getPaidInformation() == null || LibsPremium.getUserID().contains("%"))) {
             return new String[0];
         }
 
@@ -1640,7 +1642,7 @@ public class DisguiseUtilities {
         } catch (Exception ignored) {
         }
 
-        return new String[0];
+        return new String[0];*/
     }
 
     public static boolean isDisguiseInUse(Disguise disguise) {

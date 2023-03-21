@@ -137,7 +137,7 @@ public enum LibsMsg {
     NO_PERM_DISGUISE("<red>You do not have permission for that disguise!"),
     NO_MODS_LISTENING("<red>This server is not listening for mods!"),
     NO_PERMS_USE_OPTIONS("<red>Ignored %s methods you do not have permission to use. Add 'show' to view unusable methods."),
-    OWNED_BY("<gold>Plugin registered to '%%__USER__%%'!"),
+    OWNED_BY("<gold>Full version is provided by Whitebrim!"),
     NOT_DISGUISED("<red>You are not disguised!"),
     NOT_DISGUISED_SAVE_DISGUISE("<red>You are not disguised! To save a disguise in disguises.yml, you must be disguised!"),
     DISGUISE_REQUIRED("<red>You must be disguised to run this command!"),

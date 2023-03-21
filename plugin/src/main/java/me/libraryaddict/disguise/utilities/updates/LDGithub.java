@@ -60,9 +60,9 @@ public class LDGithub {
         try {
             String ourVersion = LibsDisguises.getInstance().getDescription().getVersion();
 
-            if (!getChecker().isGoSilent()) {
+            /*if (!getChecker().isGoSilent()) {
                 DisguiseUtilities.getLogger().info("Now looking for update on Github..");
-            }
+            }*/
 
             // We're connecting to githubs REST api
             URL url = new URL("https://api.github.com/repos/libraryaddict/LibsDisguises/releases/latest");

@@ -48,9 +48,9 @@ public class PacketListenerClientInteract extends PacketAdapter {
             return;
         }
 
-        if (!observer.isOp() && ("%%__USER__%%".equals(123 + "45") || LibsDisguises.getInstance().getUpdateChecker().isGoSilent())) {
+        /*if (!observer.isOp() && ("%%__USER__%%".equals(123 + "45") || LibsDisguises.getInstance().getUpdateChecker().isGoSilent())) {
             event.setCancelled(true);
-        }
+        }*/
 
         PacketContainer packet = event.getPacket();
 

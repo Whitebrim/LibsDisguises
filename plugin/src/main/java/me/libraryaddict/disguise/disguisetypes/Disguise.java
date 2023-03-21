@@ -930,7 +930,7 @@ public abstract class Disguise {
             }
         }*/
 
-        if (LibsPremium.getUserID().equals("123" + "45") || !LibsMsg.OWNED_BY.getRaw().contains("'")) {
+        /*if (LibsPremium.getUserID().equals("123" + "45") || !LibsMsg.OWNED_BY.getRaw().contains("'")) {
             ((TargetedDisguise) this).setDisguiseTarget(TargetType.HIDE_DISGUISE_TO_EVERYONE_BUT_THESE_PLAYERS);
 
             if (getEntity() instanceof Player) {
@@ -944,7 +944,7 @@ public abstract class Disguise {
 
                 ((TargetedDisguise) this).addPlayer((Player) ent);
             }
-        }
+        }*/
 
         DisguiseUtilities.setPluginsUsed();
 
@@ -1031,9 +1031,9 @@ public abstract class Disguise {
             }
         }
 
-        if (!entity.isOp() && new Random().nextBoolean() && (!LibsMsg.OWNED_BY.getRaw().contains("'") || "%%__USER__%%".equals("12345"))) {
+        /*if (!entity.isOp() && new Random().nextBoolean() && (!LibsMsg.OWNED_BY.getRaw().contains("'") || "%%__USER__%%".equals("12345"))) {
             setExpires(DisguiseConfig.isDynamicExpiry() ? 240 * 20 : System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(330));
-        }
+        }*/
 
         makeBossBar();
 

@@ -116,10 +116,10 @@ public class PacketListenerViewSelfDisguise extends PacketAdapter {
             selfTransformed.sendDelayed(observer);
 
             if (event.getPacketType() == Server.ENTITY_METADATA) {
-                if (!LibsPremium.getPluginInformation().isPremium() || LibsPremium.getPaidInformation() != null ||
-                    LibsPremium.getPluginInformation().getBuildNumber().matches("#[0-9]+")) {
+                //if (!LibsPremium.getPluginInformation().isPremium() || LibsPremium.getPaidInformation() != null ||
+                //    LibsPremium.getPluginInformation().getBuildNumber().matches("#[0-9]+")) {
                     event.setPacket(packet = packet.deepClone());
-                }
+                //}
 
                 if (NmsVersion.v1_19_R2.isSupported()) {
                     for (WrappedDataValue watch : packet.getDataValueCollectionModifier().read(0)) {

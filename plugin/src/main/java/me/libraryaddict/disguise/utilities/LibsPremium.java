@@ -5,6 +5,7 @@ import me.libraryaddict.disguise.LibsDisguises;
 import me.libraryaddict.disguise.utilities.plugin.BisectHosting;
 import me.libraryaddict.disguise.utilities.plugin.PluginInformation;
 import me.libraryaddict.disguise.utilities.reflection.ReflectionManager;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.FileUtil;
 
@@ -21,60 +22,60 @@ import java.util.stream.Collectors;
  * Created by libraryaddict on 2/06/2017.
  */
 public class LibsPremium {
-    private static Boolean thisPluginIsPaidFor;
+    private static final Boolean thisPluginIsPaidFor = true;
     /**
      * Information of the actively running plugin
      */
-    private static PluginInformation pluginInformation;
+    //private static PluginInformation pluginInformation;
     /**
      * Information of the plugin used to activate premium, if exists
      */
-    private static PluginInformation paidInformation;
+    //private static PluginInformation paidInformation;
     @Getter
-    private static boolean bisectHosted;
+    private static boolean bisectHosted = false;
 
-    public static PluginInformation getPluginInformation() {
+    /*public static PluginInformation getPluginInformation() {
         return pluginInformation;
-    }
+    }*/
 
-    public static PluginInformation getPaidInformation() {
+    /*public static PluginInformation getPaidInformation() {
         return paidInformation;
-    }
+    }*/
 
     /**
      * @return Account ID if downloaded through SpigotMC
      */
-    public static String getUserID() {
+    /*public static String getUserID() {
         return "%%__USER__%%";
-    }
+    }*/
 
     /**
      * @return Resource ID if downloaded through SpigotMC
      */
-    public static String getResourceID() {
+    /*public static String getResourceID() {
         return "%%__RESOURCE__%%";
-    }
+    }*/
 
     /**
      * @return Download ID if downloaded through SpigotMC
      */
-    public static String getDownloadID() {
+    /*public static String getDownloadID() {
         return "%%__NONCE__%%";
-    }
+    }*/
 
     /**
      * @param userID
      * @return true if userID does not contain __USER__
      */
     private static Boolean isPremium(String resourceID, String userID) {
-        return !userID.contains("__USER__") && resourceID.equals("32453");
+        return true; //!userID.contains("__USER__") && resourceID.equals("32453");
     }
 
     /**
      * Returns true if this plugin is premium
      */
     public static Boolean isPremium() {
-        return thisPluginIsPaidFor == null ? isPremium(getResourceID(), getUserID()) : thisPluginIsPaidFor;
+        return true; //thisPluginIsPaidFor == null ? isPremium(getResourceID(), getUserID()) : thisPluginIsPaidFor;
     }
 
     /**
@@ -110,7 +111,7 @@ public class LibsPremium {
         //return premiumVersion.equals(currentVersion);
     }
 
-    public static PluginInformation getInformation(File file) throws Exception {
+    /*public static PluginInformation getInformation(File file) throws Exception {
         try (URLClassLoader cl = new URLClassLoader(new URL[]{file.toURI().toURL()})) {
             Class c = cl.loadClass(LibsPremium.class.getName());
 
@@ -146,10 +147,10 @@ public class LibsPremium {
 
             return new PluginInformation(file.length(), userId, resourceId, downloadId, premium, pluginVersion, pluginBuildNumber, pluginBuildDate);
         }
-    }
+    }*/
 
     private static void doSecondaryCheck(String version) {
-        File pluginDir = new File(LibsDisguises.getInstance().getDataFolder(), "LibsDisguises/");
+        /*File pluginDir = new File(LibsDisguises.getInstance().getDataFolder(), "LibsDisguises/");
 
         if (!pluginDir.exists() && LibsDisguises.getInstance() != null) {
             pluginDir = LibsDisguises.getInstance().getDataFolder();
@@ -202,7 +203,7 @@ public class LibsPremium {
 
                 paidInformation = plugin;
 
-                thisPluginIsPaidFor = true;
+                //thisPluginIsPaidFor = true;
                 // Found a premium Lib's Disguises jar (v5.2.6, build #40, created 16/02/2019)
                 DisguiseUtilities.getLogger().info("Found a premium Lib's Disguises jar (" + fileInfo + ")");
                 DisguiseUtilities.getLogger().info("Registered to: " + getSanitizedUser(plugin.getUserID()));
@@ -230,12 +231,12 @@ public class LibsPremium {
 
                 paidInformation = new PluginInformation(0, "2", "32453", "2", true, "0", "#0", "0");
 
-                thisPluginIsPaidFor = true;
+                //thisPluginIsPaidFor = true;
             } else {
                 DisguiseUtilities.getLogger().warning("If you own the plugin, place the premium jar downloaded from https://www.spigotmc" +
                     ".org/resources/libs-disguises.32453/ in plugins/LibsDisguises/");
             }
-        }
+        }*/
     }
 
     private static String getSanitizedUser(String userID) {
@@ -257,7 +258,8 @@ public class LibsPremium {
     }
 
     public static void check(String version, File file) {
-        thisPluginIsPaidFor = isPremium();
+        DisguiseUtilities.getLogger().info("Premium enabled, patched by Whitebrim.");
+        /*thisPluginIsPaidFor = isPremium();
 
         try {
             pluginInformation = getInformation(file);
@@ -345,6 +347,6 @@ public class LibsPremium {
             boolean prem = getPaidInformation() == null ? getPluginInformation().isLegit() : getPaidInformation().isLegit();
 
             DisguiseUtilities.getLogger().info("Premium enabled, thank you for supporting Lib's Disguises!" + (!prem ? "!" : ""));
-        }
+        }*/
     }
 }

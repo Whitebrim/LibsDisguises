@@ -45,9 +45,9 @@ public class DisguiseRadiusCommand extends DisguiseBaseCommand implements TabCom
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (isNotPremium(sender)) {
+        /*if (isNotPremium(sender)) {
             return true;
-        }
+        }*/
 
         if (sender.getName().equals("CONSOLE")) {
             LibsMsg.NO_CONSOLE.send(sender);

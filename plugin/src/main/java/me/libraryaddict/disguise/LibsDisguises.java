@@ -118,7 +118,7 @@ public class LibsDisguises extends JavaPlugin {
         } catch (Throwable throwable) {
             try {
                 if (isNumberedBuild() && DisguiseConfig.isAutoUpdate()) {
-                    getUpdateChecker().doUpdate();
+                    //getUpdateChecker().doUpdate();
                 }
             } catch (Throwable t) {
                 getLogger().severe("Failed to even do a forced update");
@@ -227,7 +227,7 @@ public class LibsDisguises extends JavaPlugin {
             // If this is a release build, even if jenkins build..
             if (isReleaseBuild()) {
                 // If downloaded from spigot, forcibly set release build to true
-                if (LibsPremium.getUserID().matches("[0-9]+")) {
+                if (true/*LibsPremium.getUserID().matches("[0-9]+")*/) {
                     DisguiseConfig.setUsingReleaseBuilds(true);
                 }
                 // Otherwise leave it untouched as they might've just happened to hit a dev build, which is a release build
@@ -291,7 +291,7 @@ public class LibsDisguises extends JavaPlugin {
         } catch (Throwable throwable) {
             try {
                 if (isNumberedBuild() && DisguiseConfig.isAutoUpdate()) {
-                    getUpdateChecker().doUpdate();
+                    //getUpdateChecker().doUpdate();
                 }
             } catch (Throwable t) {
                 getLogger().severe("Failed to even do a forced update");

@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpdateChecker {
-    private final long started = System.currentTimeMillis();
+    /*private final long started = System.currentTimeMillis();
     @Getter
     private PluginInformation lastDownload;
     private final AtomicBoolean downloading = new AtomicBoolean(false);
@@ -268,5 +268,5 @@ public class UpdateChecker {
 
         // Lets just ignore all this fancy logic, and say that if you're not on the current release, you're outdated!
         return !currentVersion.equals(newVersion);
-    }
+    }*/
 }

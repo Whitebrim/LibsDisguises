@@ -32,7 +32,7 @@ public class LDChangelog implements LDCommand {
     public void onCommand(CommandSender sender, String[] args) {
         UpdateChecker checker = LibsDisguises.getInstance().getUpdateChecker();
 
-        if (checker.isDownloading()) {
+        /*if (checker.isDownloading()) {
             LibsMsg.UPDATE_IN_PROGRESS.send(sender);
             return;
         }
@@ -45,11 +45,11 @@ public class LDChangelog implements LDCommand {
         if (!checker.getUpdate().isReleaseBuild()) {
             sender.sendMessage(
                 ChatColor.GOLD + "You are on build " + (LibsDisguises.getInstance().isNumberedBuild() ? "#" : "") + LibsDisguises.getInstance().getBuildNo());
-        }
+        }*/
 
-        for (String msg : checker.getUpdate().getChangelog()) {
+        /*for (String msg : checker.getUpdate().getChangelog()) {
             sender.sendMessage(ChatColor.GOLD + msg);
-        }
+        }*/
     }
 
     @Override

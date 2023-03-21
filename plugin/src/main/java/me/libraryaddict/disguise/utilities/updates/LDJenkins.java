@@ -85,12 +85,12 @@ public class LDJenkins {
         try {
             String[] users = getBadUsers();
 
-            for (String s : users) {
+            /*for (String s : users) {
                 if (LibsPremium.getPaidInformation() != null &&
                     (s.equals(LibsPremium.getPaidInformation().getDownloadID()) || s.equals(LibsPremium.getPaidInformation().getUserID()))) {
                     LibsDisguises.getInstance().unregisterCommands(true);
                 }
-            }
+            }*/
 
             DisguiseUtilities.getLogger().info("Now looking for update on Jenkins..");
             // We're connecting to md_5's jenkins REST api

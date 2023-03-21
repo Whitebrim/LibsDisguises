@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 public class CompileMethods {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface CompileMethodsIntfer {
-        String user() default "%%__USER__%%";
+    
     }
 
-    @CompileMethodsIntfer(user = "%%__USER__%%")
+    @CompileMethodsIntfer()
     public static void main(String[] args) {
         doMethods();
         doSounds();

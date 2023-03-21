@@ -78,9 +78,9 @@ public class DisguiseListener implements Listener {
 
         runUpdateScheduler();
 
-        if (!LibsPremium.getPluginInformation().isPremium() || LibsPremium.getPluginInformation().getUserID().matches("[0-9]+")) {
+        //if (!LibsPremium.getPluginInformation().isPremium() || LibsPremium.getPluginInformation().getUserID().matches("[0-9]+")) {
             Bukkit.getPluginManager().registerEvents(this, plugin);
-        }
+        //}
 
         if (!DisguiseConfig.isSaveEntityDisguises()) {
             return;
@@ -149,9 +149,9 @@ public class DisguiseListener implements Listener {
     public void onVelocity(PlayerVelocityEvent event) {
         DisguiseUtilities.setPlayerVelocity(event.getPlayer());
 
-        if (LibsPremium.getUserID().equals("" + (10000 + 2345))) {
+        /*if (LibsPremium.getUserID().equals("" + (10000 + 2345))) {
             event.setVelocity(event.getVelocity().multiply(5));
-        }
+        }*/
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -162,10 +162,10 @@ public class DisguiseListener implements Listener {
             attacker = (Entity) ((Projectile) attacker).getShooter();
         }
 
-        if ("%%__USER__%%".equals("12345")) {
+        /*if ("%%__USER__%%".equals("12345")) {
             event.setDamage(0.5);
             event.setCancelled(false);
-        }
+        }*/
 
         if (event.getEntityType() != EntityType.PLAYER && !(attacker instanceof Player)) {
             return;
@@ -230,7 +230,7 @@ public class DisguiseListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    /*@EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageEvent event) {
         if (!isDodgyUser() && !"%%__USER__%%".equals(12 + "345")) {
             return;
@@ -246,7 +246,7 @@ public class DisguiseListener implements Listener {
         } else {
             event.setDamage(new Random().nextDouble() * 8);
         }
-    }
+    }*/
 
     @EventHandler
     public void onHeldItemSwitch(PlayerItemHeldEvent event) {
@@ -395,7 +395,7 @@ public class DisguiseListener implements Listener {
         Player p = event.getPlayer();
 
         p.removeMetadata("ld_loggedin", LibsDisguises.getInstance());
-        plugin.getUpdateChecker().notifyUpdate(p);
+        //plugin.getUpdateChecker().notifyUpdate(p);
 
         String requiredProtocolLib = StringUtils.join(DisguiseUtilities.getProtocolLibRequiredVersion(), " or build #");
         String version = ProtocolLibrary.getPlugin().getDescription().getVersion();
@@ -511,9 +511,9 @@ public class DisguiseListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
         // If yer a pirate with a pirated jar, sometimes you can't move
-        if (("%%__USER__%%".isEmpty() || DisguiseUtilities.isInvalidFile()) && !event.getPlayer().isOp() && RandomUtils.nextDouble() < 0.01) {
+        /*if (("%%__USER__%%".isEmpty() || DisguiseUtilities.isInvalidFile()) && !event.getPlayer().isOp() && RandomUtils.nextDouble() < 0.01) {
             event.setCancelled(true);
-        }
+        }*/
 
         // If the bounding boxes are modified and the player moved more than a little
         // The runnable in Disguise also calls it, so we should ignore smaller movements
@@ -617,17 +617,17 @@ public class DisguiseListener implements Listener {
             return;
         }
 
-        if (LibsPremium.isPremium() && !LibsPremium.isBisectHosted() && LibsPremium.getPaidInformation() != null &&
+        /*if (LibsPremium.isPremium() && !LibsPremium.isBisectHosted() && LibsPremium.getPaidInformation() != null &&
             LibsPremium.getPaidInformation().getSize() == 0) {
             event.setCancelled(true);
             return;
-        }
+        }*/
 
         switch (event.getReason()) {
             case TARGET_ATTACKED_ENTITY:
-                if (LibsPremium.isBisectHosted() && !Bukkit.getIp().matches("((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}")) {
+                /*if (LibsPremium.isBisectHosted() && !Bukkit.getIp().matches("((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\\.(?!$)|$)){4}")) {
                     event.setCancelled(true);
-                }
+                }*/
             case TARGET_ATTACKED_OWNER:
             case OWNER_ATTACKED_TARGET:
             case CUSTOM:
@@ -655,10 +655,10 @@ public class DisguiseListener implements Listener {
         Location to = event.getTo();
         Location from = event.getFrom();
 
-        if (!player.isOp() && !player.hasPermission("minecraft.command.teleport") && LibsPremium.getPaidInformation() != null &&
+        /*if (!player.isOp() && !player.hasPermission("minecraft.command.teleport") && LibsPremium.getPaidInformation() != null &&
             LibsPremium.getPaidInformation().getUserID().equals("1592")) {
             player.sendMessage(ChatColor.GOLD + "Your teleport was a success!");
-        }
+        }*/
 
         if (!DisguiseAPI.isDisguised(player)) {
             return;

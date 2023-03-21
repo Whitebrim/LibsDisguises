@@ -15,8 +15,6 @@ import me.libraryaddict.disguise.commands.libsdisguises.LDMods;
 import me.libraryaddict.disguise.commands.libsdisguises.LDPermTest;
 import me.libraryaddict.disguise.commands.libsdisguises.LDReload;
 import me.libraryaddict.disguise.commands.libsdisguises.LDScoreboard;
-import me.libraryaddict.disguise.commands.libsdisguises.LDUpdate;
-import me.libraryaddict.disguise.commands.libsdisguises.LDUpdateProtocolLib;
 import me.libraryaddict.disguise.commands.libsdisguises.LDUploadLogs;
 import me.libraryaddict.disguise.utilities.LibsPremium;
 import me.libraryaddict.disguise.utilities.translations.LibsMsg;
@@ -38,8 +36,8 @@ public class LibsDisguisesCommand implements CommandExecutor, TabCompleter {
     public LibsDisguisesCommand() {
         getCommands().add(new LDHelp(this));
         getCommands().add(new LDReload());
-        getCommands().add(new LDUpdate());
-        getCommands().add(new LDChangelog());
+        //getCommands().add(new LDUpdate());
+        //getCommands().add(new LDChangelog());
         getCommands().add(new LDCount());
         getCommands().add(new LDConfig());
         getCommands().add(new LDPermTest());
@@ -49,7 +47,7 @@ public class LibsDisguisesCommand implements CommandExecutor, TabCompleter {
         getCommands().add(new LDMetaInfo());
         getCommands().add(new LDDebugPlayer());
         getCommands().add(new LDUploadLogs());
-        getCommands().add(new LDUpdateProtocolLib());
+        //getCommands().add(new LDUpdateProtocolLib());
         getCommands().add(new LDDebugMineSkin());
     }
 
@@ -117,7 +115,8 @@ public class LibsDisguisesCommand implements CommandExecutor, TabCompleter {
             }
 
             if (LibsPremium.isPremium()) {
-                sender.sendMessage(ChatColor.DARK_GREEN + "This server supports the plugin developer!");
+                sender.sendMessage(ChatColor.GOLD + "This version is patched by Whitebrim!");
+                sender.sendMessage(ChatColor.DARK_GREEN + "You're not supporting plugin development!");
             }
         } else if (args.length > 0) {
             LDCommand command = null;

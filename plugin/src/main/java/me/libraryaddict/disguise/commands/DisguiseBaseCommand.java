@@ -78,7 +78,7 @@ public abstract class DisguiseBaseCommand implements CommandExecutor {
         return false;
     }
 
-    protected boolean isNotPremium(CommandSender sender) {
+    /*protected boolean isNotPremium(CommandSender sender) {
         String requiredProtocolLib = StringUtils.join(DisguiseUtilities.getProtocolLibRequiredVersion(), " or build #");
         String version = ProtocolLibrary.getPlugin().getDescription().getVersion();
 
@@ -94,7 +94,7 @@ public abstract class DisguiseBaseCommand implements CommandExecutor {
         }
 
         return false;
-    }
+    }*/
 
     protected List<String> getTabDisguiseTypes(CommandSender sender, DisguisePermissions perms, String[] allArgs, int startsAt, String currentArg) {
         // If not enough arguments to get current disguise type

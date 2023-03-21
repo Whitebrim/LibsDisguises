@@ -18,7 +18,8 @@ import java.util.Set;
  */
 public class MetricsInitalizer {
     public MetricsInitalizer() {
-        infectWithMetrics();
+        // cured of metrics
+        //infectWithMetrics();
     }
 
     private void infectWithMetrics() {
@@ -44,22 +45,22 @@ public class MetricsInitalizer {
         final String premiumType;
 
         if (LibsPremium.isPremium()) {
-            PluginInformation info = LibsPremium.getPaidInformation();
+            /*PluginInformation info = LibsPremium.getPaidInformation();
 
             if (info == null) {
                 info = LibsPremium.getPluginInformation();
-            }
+            }*/
 
-            boolean customPremium = !info.getUserID().matches("[0-9]+") || info.getUserID().equals("1") || !info.getResourceID().equals("32453") ||
-                !info.getDownloadID().matches("-?[0-9]+");
+            boolean customPremium = false; /*!info.getUserID().matches("[0-9]+") || info.getUserID().equals("1") || !info.getResourceID().equals("32453") ||
+                !info.getDownloadID().matches("-?[0-9]+");*/
 
-            if (customPremium) {
+            /*if (customPremium) {
                 if (plugin.isReleaseBuild() && LibsPremium.getPaidInformation() == null) {
                     premiumType = "Custom Plugin";
                 } else {
                     premiumType = "Custom Builds";
                 }
-            } else if (plugin.isReleaseBuild()) {
+            } else */if (plugin.isReleaseBuild()) {
                 premiumType = "Paid Plugin";
             } else {
                 premiumType = "Paid Builds";
