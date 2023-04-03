@@ -85,7 +85,7 @@ public class LibsPremium {
         currentVersion = currentVersion.replaceAll("(v)|(-SNAPSHOT)", "");
 
         // Premium version must be using an accepted versioning system
-        if (!premiumVersion.matches("[0-9]+(\\.[0-9]+)+")) {
+        if (!premiumVersion.matches("\\d+(\\.\\d+)+")) {
             return false;
         }
 
@@ -94,7 +94,7 @@ public class LibsPremium {
         }
 
         // If current version is not a number version, then the premium version cannot be checked
-        if (!currentVersion.matches("[0-9]+(\\.[0-9]+)+")) {
+        if (!currentVersion.matches("\\d+(\\.\\d+)+")) {
             // Return true as the rest of the version check cannot be used
             return true;
         }
@@ -138,7 +138,7 @@ public class LibsPremium {
                 pluginBuildNumber = config.getString("build-number");
 
                 // If build number is composed of purely numbers, prepend with # for readability
-                if (pluginBuildNumber.matches("[0-9]+")) {
+                if (pluginBuildNumber.matches("\\d+")) {
                     pluginBuildNumber = "#" + pluginBuildNumber;
                 }
             }
@@ -157,7 +157,6 @@ public class LibsPremium {
         }
 
         File[] files = pluginDir.listFiles();
-        boolean foundJar = false;
 
         if (files == null) {
             return;
@@ -171,8 +170,6 @@ public class LibsPremium {
             if (!file.getName().endsWith(".jar")) {
                 continue;
             }
-
-            foundJar = true;
 
             PluginInformation plugin;
 
@@ -209,7 +206,7 @@ public class LibsPremium {
                 DisguiseUtilities.getLogger().info("Registered to: " + getSanitizedUser(plugin.getUserID()));
 
                 // >.>
-                if (plugin.getBuildNumber() == null || !plugin.getBuildNumber().matches("#[0-9]+") ||
+                if (plugin.getBuildNumber() == null || !plugin.getBuildNumber().matches("#\\d+") ||
                     Integer.parseInt(plugin.getBuildNumber().substring(1)) < 300) {
                     file.delete();
                     continue;
@@ -226,7 +223,9 @@ public class LibsPremium {
         }
 
         if (!isPremium()) {
-            if (bisectHosted = new BisectHosting().isBisectHosted("LibsDisguises")) {
+            bisectHosted = new BisectHosting().isBisectHosted("LibsDisguises");
+
+            if (bisectHosted) {
                 DisguiseUtilities.getLogger().info("Hosted by BisectHosting! Premium enabled!");
 
                 paidInformation = new PluginInformation(0, "2", "32453", "2", true, "0", "#0", "0");
@@ -244,7 +243,7 @@ public class LibsPremium {
             return "N/A";
         }
 
-        if (!userID.matches("[0-9]+")) {
+        if (!userID.matches("\\d+")) {
             return String.format("... %s? Am I reading this right?", userID);
         }
 
@@ -283,7 +282,7 @@ public class LibsPremium {
 
             String buildNo = LibsDisguises.getInstance().getBuildNo();
 
-            if (buildNo != null && buildNo.matches("[0-9]+")) {
+            if (buildNo != null && buildNo.matches("\\d+")) {
                 buildNo = "#" + buildNo;
             }
 
@@ -307,7 +306,7 @@ public class LibsPremium {
                 try {
                     PluginInformation info = getInformation(f);
 
-                    if (info.getBuildNumber() == null || !info.getBuildNumber().matches("#[0-9]+")) {
+                    if (info.getBuildNumber() == null || !info.getBuildNumber().matches("#\\d+")) {
                         f.delete();
                         DisguiseUtilities.getLogger().info("Ew, I don't recognize " + f.getName());
                         continue;
