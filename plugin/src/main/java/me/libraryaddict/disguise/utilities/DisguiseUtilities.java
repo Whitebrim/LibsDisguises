@@ -66,6 +66,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.KeyedBossBar;
@@ -83,6 +84,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -260,6 +263,7 @@ public class DisguiseUtilities {
     @Getter
     @Setter
     private static boolean protocollibUpdateDownloaded;
+    private static NamespacedKey savedDisguisesKey;
 
     static {
         final Matcher matcher = Pattern.compile("(?:1\\.)?(\\d+)").matcher(System.getProperty("java.version"));
@@ -531,49 +535,46 @@ public class DisguiseUtilities {
      * Returns the min required version, as in any older version will just not work.
      */
     public static String[] getProtocolLibRequiredVersion() {
-        // If we are on 1.12
-        if (!NmsVersion.v1_13.isSupported()) {
-            return new String[]{"4.4.0"};
-        }
+        // 1.12 base version
+        String[] requiredVersion = new String[]{"4.4.0"};
 
         // If we are on 1.13, 1.14, 1.15
-        if (!NmsVersion.v1_16.isSupported()) {
-            return new String[]{"4.5.1"};
+        if (NmsVersion.v1_13.isSupported()) {
+            requiredVersion = new String[]{"4.5.1"};
         }
 
         // If we are on 1.16
-        if (!NmsVersion.v1_17.isSupported()) {
-            return new String[]{"4.6.0"};
+        if (NmsVersion.v1_16.isSupported()) {
+            requiredVersion = new String[]{"4.6.0"};
         }
 
         // If we are on 1.17, you need this release or dev build
         // ProtocolLib is a little funny in that it provides next release version as the current version
-        if (!NmsVersion.v1_18.isSupported()) {
-            return new String[]{"4.7.0", "528"};
+        if (NmsVersion.v1_17.isSupported()) {
+            requiredVersion = new String[]{"4.7.0", "528"};
         }
 
         // If you're on 1.18..
-        if (!NmsVersion.v1_19_R1.isSupported()) {
-            return new String[]{"4.8.0"};
+        if (NmsVersion.v1_18.isSupported()) {
+            requiredVersion = new String[]{"4.8.0"};
         }
 
         // If you're on 1.19.0
         if (NmsVersion.v1_19_R1.isSupported()) {
-            return new String[]{"5.0.1", "600"};
+            requiredVersion = new String[]{"5.0.1", "600"};
         }
 
         // If you're on 1.19.1 or 1.19.2
         if (NmsVersion.v1_19_R2.isSupported()) {
-            return new String[]{"5.0.1", "600"};
+            requiredVersion = new String[]{"5.0.1", "600"};
         }
 
         // If you're on 1.19.4
         if (NmsVersion.v1_19_R3.isSupported()) {
-            return new String[]{"5.0.1", "627"};
+            requiredVersion = new String[]{"5.0.1", "630"};
         }
 
-        // When we haven't updated!
-        throw new IllegalArgumentException("ProtocolLib support was not added for " + ReflectionManager.getVersion().name());
+        return requiredVersion;
     }
 
     public static boolean isProtocolLibOutdated() {
@@ -728,7 +729,7 @@ public class DisguiseUtilities {
                 }
 
                 disguisesSaved++;
-                saveDisguises(disg.getEntity().getUniqueId(), list.toArray(new Disguise[0]));
+                saveDisguises(disg.getEntity(), list.toArray(new Disguise[0]));
                 break;
             }
         }
@@ -775,6 +776,38 @@ public class DisguiseUtilities {
         }
     }
 
+    public static void saveDisguises(Entity owningEntity, Disguise[] disguise) {
+        if (!LibsPremium.isPremium()) {
+            return;
+        }
+
+        if (!NmsVersion.v1_14.isSupported()) {
+            saveDisguises(owningEntity.getUniqueId(), disguise);
+            return;
+        }
+
+        try {
+            if (disguise == null || disguise.length == 0) {
+                owningEntity.getPersistentDataContainer().remove(savedDisguisesKey);
+            } else {
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i < disguise.length; i++) {
+                    builder.append(DisguiseParser.parseToString(disguise[i], true, true));
+
+                    if (i + 1 < disguise.length) {
+                        builder.append("\n");
+                    }
+                }
+
+                owningEntity.getPersistentDataContainer().set(savedDisguisesKey, PersistentDataType.STRING, builder.toString());
+            }
+        } catch (StackOverflowError | Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Deprecated
     public static void saveDisguises(UUID owningEntity, Disguise[] disguise) {
         if (!LibsPremium.isPremium()) {
             return;
@@ -792,7 +825,6 @@ public class DisguiseUtilities {
                     disguiseFile.delete();
                 }
             } else {
-
                 // I hear pirates don't obey standards
                 @SuppressWarnings("MismatchedStringCase")
                 PrintWriter writer = new PrintWriter(disguiseFile, "UTF-8");
@@ -814,16 +846,66 @@ public class DisguiseUtilities {
         }
     }
 
+    @Deprecated
     public static Disguise[] getSavedDisguises(UUID entityUUID) {
         return getSavedDisguises(entityUUID, false);
     }
 
+    public static Disguise[] getSavedDisguises(Entity entity) {
+        return getSavedDisguises(entity, false);
+    }
+
+    public static Disguise[] getSavedDisguises(Entity entity, boolean remove) {
+        if (!LibsPremium.isPremium()) {
+            return new Disguise[0];
+        }
+
+        if (!NmsVersion.v1_14.isSupported()) {
+            return getSavedDisguises(entity.getUniqueId(), remove);
+        }
+
+        PersistentDataContainer container = entity.getPersistentDataContainer();
+        String data = container.get(savedDisguisesKey, PersistentDataType.STRING);
+
+        if (data == null) {
+            return getSavedDisguises(entity.getUniqueId(), remove);
+        }
+
+        try {
+            if (remove) {
+                container.remove(savedDisguisesKey);
+            }
+
+            Disguise[] disguises = loadDisguises(data);
+
+            if (disguises == null) {
+                return new Disguise[0];
+            }
+
+            return disguises;
+        } catch (Throwable e) {
+            if (!remove) {
+                container.remove(savedDisguisesKey);
+            }
+
+            getLogger().severe("Malformed disguise for " + entity.getUniqueId() + "(" + data + ")");
+            e.printStackTrace();
+        }
+
+        return new Disguise[0];
+    }
+
+    @Deprecated
     public static Disguise[] getSavedDisguises(UUID entityUUID, boolean remove) {
         if (!isSavedDisguise(entityUUID) || !LibsPremium.isPremium()) {
             return new Disguise[0];
         }
 
         if (!savedDisguises.exists()) {
+            if (!NmsVersion.v1_14.isSupported()) {
+                return new Disguise[0];
+            }
+
             savedDisguises.mkdirs();
         }
 
@@ -853,23 +935,7 @@ public class DisguiseUtilities {
                 return new Disguise[0];
             }
 
-            if (Character.isAlphabetic(cached.charAt(0))) {
-                String[] spl = cached.split("\n");
-                disguises = new Disguise[spl.length];
-
-                for (int i = 0; i < disguises.length; i++) {
-                    disguises[i] = DisguiseParser.parseDisguise(spl[i]);
-                }
-            } else if (!java16) {
-                disguises = gson.fromJson(cached, Disguise[].class);
-            } else {
-                if (!criedOverJava16) {
-                    criedOverJava16 = true;
-                    getLogger().warning("Failed to load a disguise using old format, this is due to Java 16 breaking stuff. This error will only print once.");
-                }
-
-                return new Disguise[0];
-            }
+            disguises = loadDisguises(cached);
 
             if (disguises == null) {
                 return new Disguise[0];
@@ -884,13 +950,37 @@ public class DisguiseUtilities {
         return new Disguise[0];
     }
 
+    private static Disguise[] loadDisguises(String cached) throws Throwable {
+        Disguise[] disguises;
+
+        if (Character.isAlphabetic(cached.charAt(0))) {
+            String[] spl = cached.split("\n");
+            disguises = new Disguise[spl.length];
+
+            for (int i = 0; i < disguises.length; i++) {
+                disguises[i] = DisguiseParser.parseDisguise(spl[i]);
+            }
+        } else if (!java16) {
+            disguises = gson.fromJson(cached, Disguise[].class);
+        } else {
+            if (!criedOverJava16) {
+                criedOverJava16 = true;
+                getLogger().warning("Failed to load a disguise using old format, this is due to Java 16 breaking stuff. This error will only print once.");
+            }
+
+            return new Disguise[0];
+        }
+
+        return disguises;
+    }
+
     public static void removeSavedDisguise(UUID entityUUID) {
         if (!savedDisguiseList.remove(entityUUID)) {
             return;
         }
 
         if (!savedDisguises.exists()) {
-            savedDisguises.mkdirs();
+            return;
         }
 
         File disguiseFile = new File(savedDisguises, entityUUID.toString());
@@ -1464,6 +1554,7 @@ public class DisguiseUtilities {
         }
 
         fancyHiddenTabs = NmsVersion.v1_19_R2.isSupported() && Bukkit.getPluginManager().getPlugin("ViaBackwards") == null;
+        savedDisguisesKey = new NamespacedKey(LibsDisguises.getInstance(), "SavedDisguises");
 
         GsonBuilder gsonBuilder = new GsonBuilder();
 
@@ -1500,19 +1591,23 @@ public class DisguiseUtilities {
             }
         }
 
-        if (!savedDisguises.exists()) {
-            savedDisguises.mkdirs();
-        }
-
         cachedNames.addAll(Arrays.asList(profileCache.list()));
 
         invalidFile = LibsDisguises.getInstance().getFile().getName().toLowerCase(Locale.ENGLISH).matches(".*((crack)|(null)|(leak)).*");
 
-        for (String key : savedDisguises.list()) {
-            try {
-                savedDisguiseList.add(UUID.fromString(key));
-            } catch (Exception ex) {
-                getLogger().warning("The file '" + key + "' does not belong in " + savedDisguises.getAbsolutePath());
+        if (LibsPremium.isPremium()) {
+            if (!savedDisguises.exists() && !NmsVersion.v1_14.isSupported()) {
+                savedDisguises.mkdirs();
+            }
+
+            if (savedDisguises.exists() && savedDisguises.isDirectory()) {
+                for (String key : savedDisguises.list()) {
+                    try {
+                        savedDisguiseList.add(UUID.fromString(key));
+                    } catch (Exception ex) {
+                        getLogger().warning("The file '" + key + "' does not belong in " + savedDisguises.getAbsolutePath());
+                    }
+                }
             }
         }
 
