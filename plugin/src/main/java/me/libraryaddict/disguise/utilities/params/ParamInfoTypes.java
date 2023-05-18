@@ -7,6 +7,7 @@ import me.libraryaddict.disguise.DisguiseConfig;
 import me.libraryaddict.disguise.disguisetypes.EntityPose;
 import me.libraryaddict.disguise.disguisetypes.GolemCrack;
 import me.libraryaddict.disguise.disguisetypes.RabbitType;
+import me.libraryaddict.disguise.utilities.DisguiseUtilities;
 import me.libraryaddict.disguise.utilities.params.types.ParamInfoEnum;
 import me.libraryaddict.disguise.utilities.params.types.base.ParamInfoBoolean;
 import me.libraryaddict.disguise.utilities.params.types.base.ParamInfoDouble;
@@ -140,14 +141,23 @@ public class ParamInfoTypes {
         }
 
         if (NmsVersion.v1_19_R3.isSupported()) {
-            paramInfos.add(new ParamInfoTransformation(Transformation.class, "Transformation", "Translation (Transform, Left Rotation, Scale, Right Rotation)",
-                "Numbers for a position translation"));
-            paramInfos.add(new ParamInfoVector3f(Vector3f.class, "Vector3f", "Vector3f (X, Y, Z)", "Used as part of a Transformation"));
+            paramInfos.add(new ParamInfoTransformation(Transformation.class, "Transformation",
+                "Translation (Transform, Left Rotation, Scale, Right Rotation). 3, then 4, then 3, then 4 numbers. All seperated by a comma",
+                "14 comma seperated numbers for a position translation"));
             paramInfos.add(
-                new ParamInfoQuaternionf(Quaternionf.class, "Quaternion", "Quaternion (X, Y, Z, W)", "Four values used to define part of a Transformation"));
+                new ParamInfoVector3f(Vector3f.class, "Vector3f", "Vector3f (X, Y, Z)", "Used as part of a Transformation for the Transform and Scale"));
+            paramInfos.add(new ParamInfoQuaternionf(Quaternionf.class, "Quaternion", "Quaternion (X, Y, Z, W)",
+                "Four values used to define part of a Transformation for the rotations"));
             paramInfos.add(new ParamInfoEnum(ItemDisplay.ItemDisplayTransform.class, "Item Display Transform", "How the Item Display is transformed"));
             paramInfos.add(new ParamInfoEnum(Display.Billboard.class, "Display Billboard", "How the billboard is aligned"));
-            paramInfos.add(new ParamInfoEnum(TextDisplay.TextAligment.class, "Text Display Alignment", "How the text is aligned in the display"));
+
+            try {
+                paramInfos.add(new ParamInfoEnum(TextDisplay.TextAlignment.class, "Text Display Alignment", "How the text is aligned in the display"));
+            } catch (Throwable ex) {
+                DisguiseUtilities.getLogger()
+                    .severe("You are using 1.19.4, but you're using an outdated build of 1.19.4, you need to update the spigot (or paper) jar");
+                ex.printStackTrace();
+            }
         }
 
         paramInfos.add(new ParamInfoEnum(DisguiseConfig.NotifyBar.class, "NotifyBar", "Where the disguised indicator should appear"));

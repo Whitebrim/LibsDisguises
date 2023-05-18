@@ -98,8 +98,7 @@ public class LibsDisguises extends JavaPlugin {
                     }
                 } catch (Exception e) {
                     getLogger().severe(
-                        "Looks like ProtocolLib's site may be down! MythicCraft/MythicMobs has a discord server https://discord.gg/EErRhJ4qgx you" + " can " +
-                            "join. Check the pins in #libs-support for a ProtocolLib.jar you can download!");
+                        "Looks like ProtocolLib's site may be down! Try download it manually from https://ci.dmulloy2.net/job/ProtocolLib/");
                     e.printStackTrace();
                 }
 
@@ -192,8 +191,9 @@ public class LibsDisguises extends JavaPlugin {
             }
 
             if (ReflectionManager.getVersion() == null) {
-                getLogger().severe("You're using the wrong version of Lib's Disguises for your server! This is " + "intended for " +
-                    StringUtils.join(Arrays.stream(NmsVersion.values()).map(v -> v.name().replace("_", ".")).collect(Collectors.toList()), " & ") + "!");
+                getLogger().severe("You're using the wrong version of Lib's Disguises for your server! This is " + "intended for " + StringUtils.join(
+                    Arrays.stream(NmsVersion.values()).filter(v -> v != NmsVersion.UNSUPPORTED).map(v -> v.name().replace("_", "."))
+                        .collect(Collectors.toList()), " & ") + "!");
                 getPluginLoader().disablePlugin(this);
                 return;
             }
@@ -254,12 +254,11 @@ public class LibsDisguises extends JavaPlugin {
             new SoundManager().load();
 
             ReflectionManager.registerValues();
+            DisguiseParser.createDefaultMethods();
 
             ParamInfoManager.getParamInfoSoundGroup().recalculate();
 
             DisguiseConfig.loadConfig();
-
-            DisguiseParser.createDefaultMethods();
 
             PacketsManager.addPacketListeners();
 

@@ -977,13 +977,13 @@ public class ReflectionManager {
             return createTablistPacket(disguise, EnumWrappers.PlayerInfoAction.ADD_PLAYER);
         }
 
-        return nmsReflection.getTabListPacket(disguise.getName(), disguise.getGameProfile(), disguise.isDisplayedInTab(),
+        return nmsReflection.getTabListPacket(disguise.getTablistName(), disguise.getGameProfile(), disguise.isDisplayedInTab(),
             EnumWrappers.PlayerInfoAction.ADD_PLAYER, EnumWrappers.PlayerInfoAction.UPDATE_DISPLAY_NAME, EnumWrappers.PlayerInfoAction.UPDATE_LISTED);
     }
 
     public static PacketContainer createTablistPacket(PlayerDisguise disguise, EnumWrappers.PlayerInfoAction action) {
         if (nmsReflection != null) {
-            return nmsReflection.getTabListPacket(disguise.getName(), disguise.getGameProfile(), disguise.isDisplayedInTab(), action);
+            return nmsReflection.getTabListPacket(disguise.getTablistName(), disguise.getGameProfile(), disguise.isDisplayedInTab(), action);
         }
 
         try {
@@ -2205,34 +2205,44 @@ public class ReflectionManager {
      */
     @SneakyThrows
     public static void registerValues() {
+        int maxErrorsThrown = 5;
+
         for (DisguiseType disguiseType : DisguiseType.values()) {
-            if (disguiseType.getEntityType() == null) {
-                continue;
+            try {
+                if (disguiseType.getEntityType() == null) {
+                    continue;
+                }
+
+                Class watcherClass = getFlagWatcher(disguiseType);
+
+                if (watcherClass == null) {
+                    DisguiseUtilities.getLogger().severe("Error loading " + disguiseType.name() + ", FlagWatcher not assigned");
+                    continue;
+                }
+
+                // Invalidate invalid distribution
+                /*if (LibsPremium.isPremium() && ((LibsPremium.getPaidInformation() != null && LibsPremium.getPaidInformation().isPremium() &&
+                        !LibsPremium.getPaidInformation().isLegit()) ||
+                        (LibsPremium.getPluginInformation() != null && LibsPremium.getPluginInformation().isPremium() &&
+                            !LibsPremium.getPluginInformation().isLegit()))) {
+                        throw new IllegalStateException(
+                            "Error while checking pi rate on startup! Please re-download the jar from SpigotMC before " + "reporting this error!");
+                    }*/
+
+                disguiseType.setWatcherClass(watcherClass);
+
+                if (LibsDisguises.getInstance() == null || DisguiseValues.getDisguiseValues(disguiseType) != null) {
+                    continue;
+                }
+
+                createNMSValues(disguiseType);
+            } catch (Throwable throwable) {
+                if (maxErrorsThrown-- <= 0) {
+                    throw throwable;
+                }
+
+                throwable.printStackTrace();
             }
-
-            Class watcherClass = getFlagWatcher(disguiseType);
-
-            if (watcherClass == null) {
-                DisguiseUtilities.getLogger().severe("Error loading " + disguiseType.name() + ", FlagWatcher not assigned");
-                continue;
-            }
-
-            // Invalidate invalid distribution
-            /*if (LibsPremium.isPremium() &&
-                ((LibsPremium.getPaidInformation() != null && LibsPremium.getPaidInformation().isPremium() && !LibsPremium.getPaidInformation().isLegit()) ||
-                    (LibsPremium.getPluginInformation() != null && LibsPremium.getPluginInformation().isPremium() &&
-                        !LibsPremium.getPluginInformation().isLegit()))) {
-                throw new IllegalStateException(
-                    "Error while checking pi rate on startup! Please re-download the jar from SpigotMC before " + "reporting this error!");
-            }*/
-
-            disguiseType.setWatcherClass(watcherClass);
-
-            if (LibsDisguises.getInstance() == null || DisguiseValues.getDisguiseValues(disguiseType) != null) {
-                continue;
-            }
-
-            createNMSValues(disguiseType);
         }
     }
 
@@ -2508,9 +2518,9 @@ public class ReflectionManager {
         for (Objective objective : objectives) {
             Score s = objective.getScore(name);
 
-            if (s.isScoreSet() && s.getScore() == score) {
+            /*if (score == 0 ? s.isScoreSet() : s.getScore() == score) {
                 continue;
-            }
+            }*/
 
             s.setScore(score);
         }

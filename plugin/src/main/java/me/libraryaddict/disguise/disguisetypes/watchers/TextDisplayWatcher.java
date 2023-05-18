@@ -7,11 +7,15 @@ import me.libraryaddict.disguise.disguisetypes.MetaIndex;
 import me.libraryaddict.disguise.utilities.DisguiseUtilities;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Color;
+import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
 
 public class TextDisplayWatcher extends DisplayWatcher {
     public TextDisplayWatcher(Disguise disguise) {
         super(disguise);
+
+        setBillboard(Display.Billboard.CENTER);
+        setText("Text Display");
     }
 
     public String getText() {
@@ -86,17 +90,17 @@ public class TextDisplayWatcher extends DisplayWatcher {
         this.setFlag(4, defaultBackground);
     }
 
-    public TextDisplay.TextAligment getAlignment() {
+    public TextDisplay.TextAlignment getAlignment() {
         int flags = getData(MetaIndex.TEXT_DISPLAY_FLAGS);
 
         if ((flags & 8) != 0) {
-            return TextDisplay.TextAligment.LEFT;
+            return TextDisplay.TextAlignment.LEFT;
         } else {
-            return (flags & 16) != 0 ? TextDisplay.TextAligment.RIGHT : TextDisplay.TextAligment.CENTER;
+            return (flags & 16) != 0 ? TextDisplay.TextAlignment.RIGHT : TextDisplay.TextAlignment.CENTER;
         }
     }
 
-    public void setAlignment(TextDisplay.TextAligment alignment) {
+    public void setAlignment(TextDisplay.TextAlignment alignment) {
         switch (alignment.ordinal()) {
             case 0:
                 this.setFlag(8, false);

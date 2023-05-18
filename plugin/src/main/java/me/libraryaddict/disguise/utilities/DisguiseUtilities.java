@@ -12,6 +12,8 @@ import com.comphenix.protocol.wrappers.WrappedParticle;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
 import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtList;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
@@ -71,6 +73,7 @@ import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.CommandSender;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -235,11 +238,7 @@ public class DisguiseUtilities {
     @Getter
     private static boolean pluginsUsed, commandsUsed, copyDisguiseCommandUsed, grabSkinCommandUsed, saveDisguiseCommandUsed, grabHeadCommandUsed;
     private static long libsDisguisesCalled;
-    /**
-     * Keeps track of what tick this occured
-     */
-    private static long velocityTime;
-    private static int velocityID;
+    private static final Cache<Integer, Long> velocityTimes = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
     private static final HashMap<UUID, ArrayList<Integer>> disguiseLoading = new HashMap<>();
     @Getter
     private static boolean runningPaper;
@@ -264,6 +263,7 @@ public class DisguiseUtilities {
     @Setter
     private static boolean protocollibUpdateDownloaded;
     private static NamespacedKey savedDisguisesKey;
+    private static final List<Enchantment> whitelistedEnchantments = new ArrayList<>();
 
     static {
         final Matcher matcher = Pattern.compile("(?:1\\.)?(\\d+)").matcher(System.getProperty("java.version"));
@@ -288,6 +288,37 @@ public class DisguiseUtilities {
             profileCache = new File(LibsDisguises.getInstance().getDataFolder(), "SavedSkins");
             savedDisguises = new File(LibsDisguises.getInstance().getDataFolder(), "SavedDisguises");
         }
+
+        whitelistedEnchantments.add(Enchantment.DEPTH_STRIDER);
+        whitelistedEnchantments.add(Enchantment.OXYGEN);
+
+        if (NmsVersion.v1_13.isSupported()) {
+            whitelistedEnchantments.add(Enchantment.RIPTIDE);
+
+            if (NmsVersion.v1_19_R1.isSupported()) {
+
+                whitelistedEnchantments.add(Enchantment.SOUL_SPEED);
+                whitelistedEnchantments.add(Enchantment.SWIFT_SNEAK);
+            }
+        }
+    }
+
+    public static boolean shouldBeHiddenSelfDisguise(ItemStack itemStack) {
+        if (itemStack == null || itemStack.getType() == Material.AIR) {
+            return false;
+        }
+
+        Map<Enchantment, Integer> enchants = itemStack.getEnchantments();
+
+        for (Enchantment enchantment : enchants.keySet()) {
+            if (!whitelistedEnchantments.contains(enchantment)) {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     public static String serialize(Component component) {
@@ -522,13 +553,11 @@ public class DisguiseUtilities {
     }
 
     public static void setPlayerVelocity(Player player) {
-        if (player == null) {
-            velocityID = 0;
-            velocityTime = 0;
-        } else {
-            velocityID = player.getEntityId();
-            velocityTime = player.getWorld().getTime();
-        }
+        velocityTimes.put(player.getEntityId(), NmsVersion.v1_19_R3.isSupported() ? player.getWorld().getGameTime() : System.currentTimeMillis());
+    }
+
+    public static void clearPlayerVelocity(Player player) {
+        velocityTimes.invalidate(player.getEntityId());
     }
 
     /**
@@ -559,19 +588,19 @@ public class DisguiseUtilities {
             requiredVersion = new String[]{"4.8.0"};
         }
 
-        // If you're on 1.19.0
+        // If you're on 1.19.1 or 1.19.2
         if (NmsVersion.v1_19_R1.isSupported()) {
-            requiredVersion = new String[]{"5.0.1", "600"};
+            requiredVersion = new String[]{"5.0.0", "600"};
         }
 
-        // If you're on 1.19.1 or 1.19.2
+        // If you're on 1.19.3
         if (NmsVersion.v1_19_R2.isSupported()) {
-            requiredVersion = new String[]{"5.0.1", "600"};
+            requiredVersion = new String[]{"5.0.0", "630"};
         }
 
         // If you're on 1.19.4
         if (NmsVersion.v1_19_R3.isSupported()) {
-            requiredVersion = new String[]{"5.0.1", "630"};
+            requiredVersion = new String[]{"5.0.0", "630"};
         }
 
         return requiredVersion;
@@ -623,7 +652,7 @@ public class DisguiseUtilities {
         }
 
         // We're connecting to jenkins's API for ProtocolLib
-        URL url = new URL("https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target/ProtocolLib.jar");
+        URL url = new URL("https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/build/libs/ProtocolLib.jar");
         // Creating a connection
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestProperty("User-Agent", "libraryaddict/LibsDisguises");
@@ -644,7 +673,18 @@ public class DisguiseUtilities {
     public static boolean isPlayerVelocity(Player player) {
         // Be generous with how many ticks they have until they jump, the server could be lagging and the player
         // would effectively have anti-knockback
-        return player.getEntityId() == velocityID && (player.getWorld().getTime() - velocityTime) < 3;
+
+        Long velocityTime = velocityTimes.getIfPresent(player.getEntityId());
+
+        if (velocityTime == null) {
+            return false;
+        }
+
+        if (NmsVersion.v1_19_R3.isSupported()) {
+            return System.currentTimeMillis() - velocityTime <= 100;
+        }
+
+        return Math.abs(player.getWorld().getGameTime() - velocityTime) <= 3;
     }
 
     public static void setGrabSkinCommandUsed() {
@@ -2751,7 +2791,7 @@ public class DisguiseUtilities {
         p.sendMessage(
             ChatColor.RED + "Please ask the server owner to update ProtocolLib! You are running " + version + " but the minimum version you should be on is " +
                 requiredProtocolLib + "!");
-        p.sendMessage(ChatColor.RED + "https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/target" + "/ProtocolLib" + ".jar");
+        p.sendMessage(ChatColor.RED + "https://ci.dmulloy2.net/job/ProtocolLib/lastSuccessfulBuild/artifact/build/libs/ProtocolLib.jar");
         p.sendMessage(ChatColor.RED + "Or! Use " + ChatColor.DARK_RED + "/ld updatepl" + ChatColor.RED + " - To update to the latest development build");
         p.sendMessage(ChatColor.DARK_GREEN + "This message is `kindly` provided by Lib's Disguises on repeat to all players due to the sheer " +
             "number of people who don't see it");
@@ -2978,7 +3018,8 @@ public class DisguiseUtilities {
     public static WrappedDataWatcher createDatawatcher(List<WatcherValue> watcherValues) {
         WrappedDataWatcher watcher = new WrappedDataWatcher();
 
-        watcherValues.forEach(v -> watcher.setObject(ReflectionManager.createDataWatcherObject(v.getMetaIndex(), v.getValue()), v.getValue()));
+        watcherValues.forEach(v -> watcher.setObject(ReflectionManager.createDataWatcherObject(v.getMetaIndex(), v.getValue()),
+            ReflectionManager.convertInvalidMeta(v.getValue())));
 
         return watcher;
     }
